@@ -240,7 +240,6 @@ public class AnalizadorPersonajes {
         System.out.println("-------------------------------------");
     }
 
-    // Pide un nombre y devuelve el personaje, o null si no existe
     private Personaje pedirPersonaje(String mensaje){
         if(personajes.isEmpty()){
             System.err.println("No hay personajes cargados.");

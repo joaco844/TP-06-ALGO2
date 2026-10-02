@@ -21,7 +21,7 @@ public class SimpleArraySet<E> implements SimpleSet<E> {
 
     @Override
     public boolean add(E element) {
-        validateElement(element);
+        if (element == null) throw new IllegalArgumentException("El elemento no puede ser nulo");
         // Si ya esta no lo agregamos, en un set no hay repetidos
         if (contains(element))
             return false;
@@ -33,7 +33,7 @@ public class SimpleArraySet<E> implements SimpleSet<E> {
 
     @Override
     public boolean remove(E element) {
-        validateElement(element);
+        if (element == null) throw new IllegalArgumentException("El elemento no puede ser nulo");
         int index = indexOf(element);
         if (index == -1)
             return false;
@@ -44,10 +44,18 @@ public class SimpleArraySet<E> implements SimpleSet<E> {
 
     @Override
     public boolean contains(E element) {
-        validateElement(element);
-        return indexOf(element) != -1;
+        if (element == null) throw new IllegalArgumentException("El elemento no puede ser nulo");        
+        for(int i = 0; i < size; i++)
+        {
+            if(array[i].equals(element))
+                return true;
+        }
+
+        return false;    
     }
 
+
+    @SuppressWarnings("unchecked")
     @Override
     public void clear() {
         array = (E[]) new Object[size];
@@ -64,6 +72,7 @@ public class SimpleArraySet<E> implements SimpleSet<E> {
         return size == 0;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public E[] toArray(E[] typeArray) {
         if (typeArray == null)
@@ -81,7 +90,7 @@ public class SimpleArraySet<E> implements SimpleSet<E> {
 
     @Override
     public SimpleSet<E> unionWith(SimpleSet<E> other) {
-        validateSet(other);
+        if (other == null) throw new IllegalArgumentException("El set no puede ser nulo");
         SimpleSet<E> result = new SimpleArraySet<>();
 
         // Agregamos todos los de este set
@@ -98,7 +107,7 @@ public class SimpleArraySet<E> implements SimpleSet<E> {
 
     @Override
     public SimpleSet<E> intersectWith(SimpleSet<E> other) {
-        validateSet(other);
+        if (other == null) throw new IllegalArgumentException("El set no puede ser nulo");
         SimpleSet<E> result = new SimpleArraySet<>();
 
         // Nos quedamos con los que estan en los dos
@@ -111,7 +120,7 @@ public class SimpleArraySet<E> implements SimpleSet<E> {
 
     @Override
     public SimpleSet<E> differenceWith(SimpleSet<E> other) {
-        validateSet(other);
+        if (other == null) throw new IllegalArgumentException("El set no puede ser nulo");
         SimpleSet<E> result = new SimpleArraySet<>();
 
         // Nos quedamos con los que estan en este y NO en el otro
@@ -130,16 +139,6 @@ public class SimpleArraySet<E> implements SimpleSet<E> {
         return -1;
     }
 
-    private void validateElement(E element) {
-        if (element == null)
-            throw new IllegalArgumentException("El elemento no puede ser nulo");
-    }
-
-    private void validateSet(SimpleSet<E> other) {
-        if (other == null)
-            throw new IllegalArgumentException("El set no puede ser nulo");
-    }
-
     private void validateSize(int newSize) {
         if (newSize >= array.length)
             resize();
@@ -147,10 +146,8 @@ public class SimpleArraySet<E> implements SimpleSet<E> {
 
     @SuppressWarnings("unchecked")
     private void resize() {
-        // Creamos un nuevo array del doble de largo que el actual
         E[] nuevoArray = (E[]) new Object[array.length * 2];
 
-        // Copiamos todo lo que esta en array al nuevo
         for (int i = 0; i < size; i++)
             nuevoArray[i] = array[i];
 
@@ -158,11 +155,9 @@ public class SimpleArraySet<E> implements SimpleSet<E> {
     }
 
     private void shiftLeft(int index) {
-        // Corremos cada elemento a la izquierda
         for (int i = index; i < size - 1; i++)
             array[i] = array[i + 1];
 
-        // Borramos el ultimo para que no quede duplicado
         array[size - 1] = null;
     }
 
